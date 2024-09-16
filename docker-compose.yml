@@ -4,23 +4,37 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile-API               # The Dockerfile to use for building the `api` service
+      dockerfile: Dockerfile-API              
     ports:
-      - "48019:8080"                          # Maps port 80 inside the container to port 8080 on the host machine
+      - "48019:8080"                          
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development  # Sets environment variable for ASP.NET Core (Development mode)
-      - ConnectionStrings__ApplicationContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True; # Update with your DB connection
+      - ASPNETCORE_ENVIRONMENT=Development 
+      - ConnectionStrings__ApplicationContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True; 
       - UseInMemoryDatabase=false
     depends_on:
-      - db                                 # Ensures that the `db` service starts before the `api` service
-  db:
-    image: "mcr.microsoft.com/mssql/server:2019-latest"  # Microsoft SQL Server image
-    environment:
-      SA_PASSWORD: "TestPas$123!@#"         # Set the SA password
-      ACCEPT_EULA: "Y"                    # Required to accept the SQL Server EULA
+      - db                                 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-Web               
     ports:
-      - "1433:1433"                       # Expose SQL Server on port 1433
+      - "48020:8080"                          
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development  
+      - ConnectionStrings__ApplicationContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True;
+      - ConnectionStrings__IdentityContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True; 
+      - ConnectionStrings__ReportContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True;
+      - UseInMemoryDatabase=false
+    depends_on:
+      - db                                 
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"  
+    environment:
+      SA_PASSWORD: "TestPas$123!@#"         
+      ACCEPT_EULA: "Y"                    
+    ports:
+      - "1433:1433"                       
     volumes:
-      - sql_data:/var/opt/mssql            # Persist database data across container restarts
+      - sql_data:/var/opt/mssql            
 volumes:
-  sql_data:                               # Volume to persist the database data
+  sql_data:                               
