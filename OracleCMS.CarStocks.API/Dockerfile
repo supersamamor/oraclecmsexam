@@ -41,6 +41,8 @@ COPY --from=build /app .
 
 # Expose port 80 for HTTP traffic
 EXPOSE 80
+# Expose HTTP port 8080
+EXPOSE 8080
 
 # Set the entry point for the container
 ENTRYPOINT ["dotnet", "OracleCMS.CarStocks.API.dll"]

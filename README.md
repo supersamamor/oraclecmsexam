@@ -29,7 +29,7 @@ docker build -t oraclecms-carstocks-api:latest -f OracleCMS.CarStocks.API/Docker
 Once the Docker image is built, run the container using the following command:
 
 ```bash
-docker run -d -p 8080:80 --name oraclecms-carstocks-api oraclecms-carstocks-api:latest
+docker run -d -p 8080:8080 --name oraclecms-carstocks-api oraclecms-carstocks-api:latest
 ```
 
 ### Step 4: Access the API
