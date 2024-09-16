@@ -6,10 +6,10 @@ services:
       context: ./OracleCMS.CarStocks.API  # The build context points to the folder containing the API's Dockerfile
       dockerfile: Dockerfile               # The Dockerfile to use for building the `api` service
     ports:
-      - "8080:80"                          # Maps port 80 inside the container to port 8080 on the host machine
+      - "48019:8080"                          # Maps port 80 inside the container to port 8080 on the host machine
     environment:
       - ASPNETCORE_ENVIRONMENT=Development  # Sets environment variable for ASP.NET Core (Development mode)
-      - ConnectionStrings__DefaultConnection=Server=db;Database=YourDatabase;User Id=sa;Password=TestPas$123!@#; # Update with your DB connection
+      - ConnectionStrings__ApplicationContext=Server=db;Database=YourDatabase;User Id=sa;Password=TestPas$123!@#; # Update with your DB connection
     depends_on:
       - db                                 # Ensures that the `db` service starts before the `api` service
   db:

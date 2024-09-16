@@ -39,8 +39,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
 
-# Expose port 80 for HTTP traffic
-EXPOSE 80
 # Expose HTTP port 8080
 EXPOSE 8080
 

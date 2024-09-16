@@ -23,7 +23,7 @@ cd oraclecmsexam
 2. Run the following command to build the Docker image:
 
 ```bash
-docker build -t supersamamor/oraclecms-carstocks-api:latest -f OracleCMS.CarStocks.API/Dockerfile .
+docker build -t supersamamor/oraclecms-carstocks-api:latest -f Dockerfile-API .
 ```
 ### Step 3: Run the Docker Container
 Once the Docker image is built, run the container using the following command:
