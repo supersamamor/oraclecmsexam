@@ -23,13 +23,13 @@ cd oraclecmsexam
 2. Run the following command to build the Docker image:
 
 ```bash
-docker build -t oraclecms-carstocks-api:latest -f OracleCMS.CarStocks.API/Dockerfile .
+docker build -t supersamamor/oraclecms-carstocks-api:latest -f OracleCMS.CarStocks.API/Dockerfile .
 ```
 ### Step 3: Run the Docker Container
 Once the Docker image is built, run the container using the following command:
 
 ```bash
-docker run -d -p 8080:8080 --name oraclecms-carstocks-api oraclecms-carstocks-api:latest
+docker run -d -p 8080:8080 --name oraclecms-carstocks-api supersamamor/oraclecms-carstocks-api:latest
 ```
 
 ### Step 4: Access the API
@@ -37,7 +37,13 @@ API Base URL: http://localhost:8080
 Swagger UI: http://localhost:8080/swagger
 
 
-### Steps for running the app using UseInMemoryDatabase
+### Docker Image Url
+
+https://hub.docker.com/repository/docker/supersamamor/oraclecms-carstocks-api
+
+### 
+
+### Steps for running the app using UseInMemoryDatabase in Visual Studio
 1. Ensure that the 'UseInMemoryDatabase' option from app settings of OracleCMS.CarStocks.API project is set to true.
     ```
       {
@@ -51,7 +57,7 @@ Swagger UI: http://localhost:8080/swagger
 2. Make sure that the start-up project is 'OracleCMS.CarStocks.API' then Run the application.
 
 
-### Steps for running the app using MS SQL Database
+### Steps for running the app using MS SQL Database in Visual Studio
 1. Ensure that the 'UseInMemoryDatabase' option from app settings of OracleCMS.CarStocks.API project is set to false.
     ```
       {

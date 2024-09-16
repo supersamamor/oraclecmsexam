@@ -1,21 +1,21 @@
-﻿version: '3.8'
+﻿version: '3.8'  # The version of Docker Compose syntax used
 
 services:
   api:
     build:
-      context: ./OracleCMS.CarStocks.API
-      dockerfile: Dockerfile
+      context: ./OracleCMS.CarStocks.API  # The build context points to the folder containing the API's Dockerfile
+      dockerfile: Dockerfile               # The Dockerfile to use for building the `api` service
     ports:
-      - "8080:80"
+      - "8080:80"                          # Maps port 80 inside the container to port 8080 on the host machine
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development  # Sets environment variable for ASP.NET Core (Development mode)
     depends_on:
-      - db
+      - db                                 # Ensures that the `db` service starts before the `api` service
 
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2019-latest  # Uses Microsoft's SQL Server 2019 image from Docker Hub
     environment:
-      SA_PASSWORD: "testpassword123"
-      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "testpassword123"       # Sets the SQL Server admin password
+      ACCEPT_EULA: "Y"                     # Accepts the end-user license agreement (EULA)
     ports:
-      - "1433:1433"
+      - "1433:1433"                        # Maps SQL Server's default port 1433 inside the container to the host machine
