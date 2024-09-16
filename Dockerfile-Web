@@ -48,10 +48,10 @@ RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
 
 # Run migrations for ApplicationContext
-RUN dotnet ef database update --context ApplicationContext
+RUN dotnet ef database update --context ApplicationContext --project OracleCMS.CarStocks.Infrastructure --startup-project OracleCMS.CarStocks.Web
 
 # Run migrations for IdentityContext
-RUN dotnet ef database update --context IdentityContext
+RUN dotnet ef database update --context IdentityContext --project OracleCMS.CarStocks.Infrastructure --startup-project OracleCMS.CarStocks.Web
 
 # Stage 3: Use a smaller runtime image for the application
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime

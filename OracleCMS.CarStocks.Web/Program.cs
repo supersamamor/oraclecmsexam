@@ -24,6 +24,9 @@ builder.Host.UseSerilog((context, services, configuration) =>
                           .Services(services).Enrich
                           .FromLogContext());
 
+// Reading connection strings from environment variables
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
 var configuration = builder.Configuration;
 var services = builder.Services;
