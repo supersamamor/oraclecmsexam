@@ -34,7 +34,26 @@ COPY . .
 WORKDIR /source/OracleCMS.CarStocks.Web
 RUN dotnet publish -c Release -o /app
 
-# Stage 2: Serve the application using a smaller runtime image
+# Stage 2: Run Migrations and Publish using SDK Image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migration
+WORKDIR /app
+
+# Copy the build output
+COPY --from=build /app ./
+
+# Install dotnet-ef tool to run migrations
+RUN dotnet tool install --global dotnet-ef
+
+# Add the tools directory to the PATH
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+# Run migrations for ApplicationContext
+RUN dotnet ef database update --context ApplicationContext
+
+# Run migrations for IdentityContext
+RUN dotnet ef database update --context IdentityContext
+
+# Stage 3: Use a smaller runtime image for the application
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
@@ -43,11 +62,11 @@ COPY --from=build /app .
 EXPOSE 8080
 EXPOSE 443
 
-# Copy the certificate (assuming you have a certificate in a certs folder)
+# Copy the certificate (if applicable)
 COPY ./certs/aspnetcore.pfx /https/aspnetcore.pfx
 
 # Set environment variables for the certificate
-ENV ASPNETCORE_Kestrel__Certificates__Default__Password "yourpassword"
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password "certpass123!@"
 ENV ASPNETCORE_Kestrel__Certificates__Default__Path "/https/aspnetcore.pfx"
 
 # Set the entry point for the container

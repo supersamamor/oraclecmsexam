@@ -42,6 +42,7 @@ else
         options.UseSqlServer(configuration.GetConnectionString("ApplicationContext"),
                              o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 }
+
 services.AddHealthChecks()
         .AddDbContextCheck<ApplicationContext>()
         .AddDbContextCheck<IdentityContext>();
@@ -51,6 +52,21 @@ services.AddSharedServices(configuration);
 services.AddChatGPTApiService(configuration);
 services.AddScheduler(configuration);
 var app = builder.Build();
+using (var serviceScope = app.Services.CreateScope())
+{
+    var serviceProvider = serviceScope.ServiceProvider;
+    try
+    {
+        var appContext = serviceProvider.GetRequiredService<ApplicationContext>();
+        appContext.Database.EnsureCreated();
+        appContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred ensuriong DB was created.");
+    }
+}
 // Static Files
 var uploadFilesPath = configuration.GetValue<string>("UsersUpload:UploadFilesPath");
 if (uploadFilesPath != null)
@@ -119,22 +135,7 @@ app.UseNotyf();
 
 // Seed the database
 if (configuration.GetValue<bool>("EnableDatabaseSeed"))
-{
-    using (var serviceScope = app.Services.CreateScope())
-    {
-        var serviceProvider = serviceScope.ServiceProvider;
-        try
-        {
-            var appContext = serviceProvider.GetRequiredService<ApplicationContext>();
-            appContext.Database.EnsureCreated();
-            appContext.Database.Migrate();
-        }
-        catch (Exception ex)
-        {
-            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred ensuriong DB was created.");
-        }
-    }
+{ 
     Log.Information("Seeding database");
 	var scope = app.Services.CreateScope();
 	await DefaultEntity.Seed(scope.ServiceProvider);
