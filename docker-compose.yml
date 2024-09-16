@@ -9,13 +9,17 @@ services:
       - "8080:80"                          # Maps port 80 inside the container to port 8080 on the host machine
     environment:
       - ASPNETCORE_ENVIRONMENT=Development  # Sets environment variable for ASP.NET Core (Development mode)
+      - ConnectionStrings__DefaultConnection=Server=db;Database=YourDatabase;User Id=sa;Password=TestPas$123!@#; # Update with your DB connection
     depends_on:
       - db                                 # Ensures that the `db` service starts before the `api` service
-
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest  # Uses Microsoft's SQL Server 2019 image from Docker Hub
+    image: "mcr.microsoft.com/mssql/server:2019-latest"  # Microsoft SQL Server image
     environment:
-      SA_PASSWORD: "testpassword123"       # Sets the SQL Server admin password
-      ACCEPT_EULA: "Y"                     # Accepts the end-user license agreement (EULA)
+      SA_PASSWORD: "TestPas$123!@#"         # Set the SA password
+      ACCEPT_EULA: "Y"                    # Required to accept the SQL Server EULA
     ports:
-      - "1433:1433"                        # Maps SQL Server's default port 1433 inside the container to the host machine
+      - "1433:1433"                       # Expose SQL Server on port 1433
+    volumes:
+      - sql_data:/var/opt/mssql            # Persist database data across container restarts
+volumes:
+  sql_data:                               # Volume to persist the database data
