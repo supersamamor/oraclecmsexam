@@ -1,0 +1,101 @@
+@using Microsoft.Extensions.Options
+@inject IOptions<List<OracleCMS.CarStocks.Web.Settings.ApplicationEcosystem>> applicationEcosystemList
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var appName = Configuration.GetValue<string>("Application");
+    var logo = "/img/logo.png";
+}
+<nav class="navbar navbar-light navbar-expand bg-white shadow topbar static-top">
+    <div class="container-fluid">
+        <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+        <img class="logo  d-none d-md-block" alt="" src="@logo">
+        <div class="nav-item dropdown no-arrow d-md-none">
+            <div class="nav-item dropdown no-arrow">
+                <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-caret-square-down"></i></a>
+                <ul class="fills-application-list-dropdown dropdown-menu animated--grow-in">
+                    @if (applicationEcosystemList.Value != null)
+                    {
+                        foreach (var application in applicationEcosystemList.Value)
+                        {
+                            if (application.IsDisabled)
+                            {
+                                <li class="navigation-disabled dropdown-item">
+                                    <a href="@application.Url" class="" title="coming soon...">@application.Name</a>
+                                </li>
+                            }
+                            else if (application.IsCurrentApplication)
+                            {
+                                <li class="selected dropdown-item">
+                                    <a href="@application.Url" class="">@application.Name</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="dropdown-item"><a href="@application.Url" class="">@application.Name</a></li>
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <ul class="fills-application-list d-none d-md-block">
+            @if (applicationEcosystemList.Value != null)
+            {
+                foreach (var application in applicationEcosystemList.Value)
+                {
+                    if (application.IsDisabled)
+                    {
+                        <li class="navigation-disabled">
+                            <a href="@application.Url" class="" title="coming soon...">@application.Name</a>
+                        </li>
+                    }
+                    else if (application.IsCurrentApplication)
+                    {
+                        <li class="selected">
+                            <a href="@application.Url" class="">@application.Name</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class=""><a href="@application.Url" class="">@application.Name</a></li>
+                    }
+                }
+            }
+        </ul>
+        <ul class="navbar-nav flex-nowrap ms-auto">
+            <li class="nav-item dropdown no-arrow d-none">
+                <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                    <form class="me-auto navbar-search w-100">
+                        <div class="input-group">
+                            <input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+            <li class="nav-item dropdown no-arrow mx-1 d-none">
+                <div class="nav-item dropdown no-arrow">
+                    <a class="dropdown-toggle nav-link" href="#"><i class="fas fa-bell fa-fw"></i></a>
+                </div>
+            </li>
+            <li class="nav-item dropdown no-arrow mx-1 d-none">
+                <div class="nav-item dropdown no-arrow">
+                    <a class="dropdown-toggle nav-link" href="#"><i class="fas fa-envelope fa-fw"></i></a>
+                </div>
+                <div class="shadow dropdown-list dropdown-menu dropdown-menu-end" aria-labelledby="alertsDropdown"></div>
+            </li>
+            <div class="d-none d-sm-block topbar-divider"></div>
+            <li class="nav-item dropdown no-arrow">
+                <div class="nav-item dropdown no-arrow">
+                    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small">@user?.Name</span><img class="border rounded-circle img-profile" src="https://ui-avatars.com/api/?background=random&rounded=true&name=@user?.Name"></a>
+                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
+                        <a class="dropdown-item" href="/Identity/Account/Manage/Index"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

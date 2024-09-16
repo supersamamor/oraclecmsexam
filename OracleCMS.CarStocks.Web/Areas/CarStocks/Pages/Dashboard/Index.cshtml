@@ -1,0 +1,79 @@
+@page
+@model OracleCMS.CarStocks.Web.Areas.CarStocks.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["ActiveMainPage"] = "Dashboard";
+    ViewData["Level1"] = "Dashboard";   
+}
+@section Styles {
+    <partial name="_DataTableStyles" />
+}
+<form id="chart-form" method="post">
+    <input type="hidden" asp-for="@Model.SelectedReportId" />
+    <div id="PartialLoaderContainer">
+        <partial name="_Chart" model="@Model.ReportList" />
+    </div>
+</form>
+@{
+    var dataAnalyticsModalId = "data-analytics-modal";
+}
+<partial name="_ModalPartial" model="@dataAnalyticsModalId" />
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ChartBuilderScripts" />
+    <script asp-add-nonce>
+        $(document).ready(function () {
+            function RefreshChart() {
+                var reportCount = $('#ReportListCount').val();
+                for (let idx = 0; idx < reportCount; idx++) {
+                    var domId = $('#ReportList_' + idx + '_DomId').val();
+                    var reportName = $('#ReportList_' + idx + '_ReportName').val();
+                    var reportOrChartType = $('#ReportList_' + idx + '_ReportOrChartType').val();
+                    var columnHeaders = $('#ReportList_' + idx + '_ColumnHeaders').val();
+                    var results = $('#ReportList_' + idx + '_Results').val();
+                    var displayLegend = $('#ReportList_' + idx + '_DisplayLegend').val();
+                    var isPercentage = $('#ReportList_' + idx + '_IsPercentage').val();
+                    $.BuildChart(domId, reportName, reportOrChartType, JSON.parse(columnHeaders), JSON.parse(results), displayLegend, isPercentage);
+                }
+            }
+
+            function analyzeDataModalPopup(reff) {
+                var reportId = $(reff)[0].dataset.reportid;
+                $('#SelectedReportId').val(reportId);
+                openDataAnalyticsModal('@dataAnalyticsModalId');
+            }
+            $(".btnDataAnalyzeData").on('click', function (e) {
+                analyzeDataModalPopup(this);
+            });
+            // Check if a chart instance already exists and destroy it
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+            RefreshChart();
+            // Defining the openModal function
+            function openDataAnalyticsModal(modalId) {
+                $('body').removeClass('loaded');
+                var url = '?handler=DataAnalytics';
+
+                $.post(url, $('#chart-form').serialize(), function (response) {
+                    var placeholderElement = $('#' + modalId);
+                    placeholderElement.find('.modal-body').html(response);
+                    placeholderElement.find('.modal-title').html("");
+                    placeholderElement.find('.modal').modal('show');
+
+                    // Event handler for the close button
+                    placeholderElement.find('.modal-footer .btnClose').click(function () {
+                        placeholderElement.find('.modal').modal('hide');
+                    });
+
+                    // Event handler for the 'x' button
+                    placeholderElement.find('.modal-header .close').click(function () {
+                        placeholderElement.find('.modal').modal('hide');
+                    });
+
+                    $('body').addClass('loaded');
+                }).fail(function () { });
+            }
+        });
+    </script>
+}

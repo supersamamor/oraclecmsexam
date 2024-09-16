@@ -1,0 +1,125 @@
+@page
+@model PendingApprovalsModel
+
+@section Styles {
+    <partial name="_DataTableStyles" />
+}
+@{
+    ViewData["Title"] = Localizer["Pending Approval List"];
+    ViewData["ActiveMainPage"] = "Approval";
+    ViewData["Level1"] = "Admin";
+    var toolBarModel = new OracleCMS.CarStocks.Web.Models.ListingToolbarModel(Localizer["Pending Approval List"].Value);
+    toolBarModel.Buttons.Add(new OracleCMS.CarStocks.Web.Models.Button("/ApproverSetup/Index", "CarStocks", OracleCMS.CarStocks.Web.Models.ButtonType.Back, 1));
+}
+<partial name="_ListingsToolbarPartial" model=@(toolBarModel) />
+<form id="pendingApproval-form" method="post">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <table id="pendingApproval" class="table table-hover table-bordered table-striped responsive nowrap fills-table" width="100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Localizer["Record Id"]
+                                </th>
+                                <th>
+                                    @Model.TableName
+                                </th>
+                                <th>
+                                    @Localizer["Approval Status"]
+                                </th>
+                                <th>
+                                    @Localizer["Sending Status"]
+                                </th>
+                                <th>
+                                    @Localizer["Sending Remarks"]
+                                </th>
+                                <th>
+                                    @Localizer["Sending Date/Time"]
+                                </th>
+                                <th>
+                                    @Localizer["Actions"]
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<input type="hidden" asp-for="@Model.TableName" />
+@section Scripts {
+    <partial name="_DataTableScripts" />
+    <script asp-add-nonce>
+        $(document).ready(function () {
+            function InitializeForm() {
+                var table = $('#pendingApproval').DataTable({
+                    select: false,
+                    serverSide: true,
+                    order: [[2, 'desc']],
+                    dom: '@Html.Raw(OracleCMS.CarStocks.Web.WebConstants.DataTableDOMLayOut)',
+                    ajax:
+                    {
+                        url: '@Url.Page("/ApproverSetup/PendingApprovals", new { area = "CarStocks", handler = "ListAll" })' + '&tableName=' + $('#TableName').val(),
+                        type: "POST",
+                        headers: {
+                            RequestVerificationToken:
+                                $('input:hidden[name="__RequestVerificationToken"]').val()
+                        },
+                    },
+                    initComplete: function (settings, json) {
+                        BindTableRowCollapseEvent();
+                    },
+                    columns: [
+                        { data: "dataId", name: "DataId", responsivePriority: 1, title: '@Localizer["Record Id"]', searchable: true },
+                        { data: "recordName", name: "RecordName", responsivePriority: 1, searchable: false, orderable: false },
+                        { data: "approvalStatus", name: "ApprovalStatus", responsivePriority: 2, title: '@Localizer["Approval Status"]', searchable: false, className: "text-center" },
+                        { data: "emailSendingStatus", name: "EmailSendingStatus", responsivePriority: 2, title: '@Localizer["Sending Status"]', searchable: false, className: "text-center" },
+                        { data: "emailSendingRemarks", name: "EmailSendingRemarks", responsivePriority: 2, title: '@Localizer["Sending Remarks"]', searchable: false },
+                        { data: "emailSendingDateTime", name: "EmailSendingDateTime", responsivePriority: 2, title: '@Localizer["Sending Date/Time"]', searchable: false },
+                        {
+                            data: null,
+                            searchable: false,
+                            orderable: false,
+                            responsivePriority: 1,
+                            width: "10%",
+                            render: function (data, type, row, meta) {
+                                var url = '@Url.Page("/ApproverSetup/PendingApprovals", new { area = "CarStocks" })' + '?handler=ResendApproval&approvalId=' + row.approvalId + '&tableName=' + $('#TableName').val();
+                                var button = '<a href="' + url + '" class="btn btnFills btnSendIcon btnResendApproval" title="@Localizer["Resend Approval"]"></a>';
+                                return button;
+                            },
+                            className: "text-center"
+                        },
+                        { data: "lastModifiedDate", name: "LastModifiedDate", title: '@Localizer["Last Modified Date"]', visible: false, searchable: false },
+                        { data: "approvalId", name: "ApprovalId", title: '@Localizer["Approval Id"]', visible: false, searchable: false },
+                    ],
+                    buttons: ['pageLength',],
+                });
+                var debounce = new $.fn.dataTable.Debounce(table); // Add delay to search
+
+                $('.btn-table_filter').on('click', function (e) {
+                    table.ajax.reload(null, false);
+                });
+                function BindTableRowCollapseEvent() {
+                    $('#pendingApproval tbody').on('click', 'td.dtr-control', function () {
+                        $.showAjaxLoaderOnClick([".btnResendApproval"]);
+                    });
+                    $.bindCancelConfirmationModal('Resend', '.btnResendApproval', '#pendingApproval-form', 'Do you want to resend the approval notification?');
+                }
+                $.showAjaxLoaderOnClick([".btnResendApproval"]);
+                table.on('draw', function () {
+                    if (table.search() !== "") {
+                        $.bindCancelConfirmationModal('Resend', '.btnResendApproval', '#pendingApproval-form', 'Do you want to resend the approval notification?');
+                    }
+                });
+                $.InitializeSearchKeyCookies(table);
+            }
+            InitializeForm();
+        });
+    </script>
+}

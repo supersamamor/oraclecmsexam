@@ -1,0 +1,302 @@
+﻿body * {
+    font-family: Poppins;
+}
+.fills-text-end {
+    text-align: right;
+}
+
+.fills-text-center {
+    text-align: center;
+}
+
+.dtr-details .fills-text-end,
+.dtr-details .fills-text-center {
+    text-align: left !important;
+}
+
+#wrapper #content-wrapper {
+    background: #fff;
+}
+
+.content-container {
+    padding: 0px 10px;
+}
+
+.bg-custom-dark-blue {
+    background-color: #061e3f;
+}
+
+.btn-custom-dark-blue {
+    background-color: #061e3f !important;
+}
+
+    .btn-custom-dark-blue:hover {
+        background-color: #061e3f;
+    }
+
+/* Object Color Theme */
+.fills-table th {
+    background-color: #624c99;
+    color: #fff;
+}
+
+.card-header,
+.card-header-custom {
+    background-color: #624c99 !important;
+    color: #fff;
+}
+
+.background-violet,
+.background-violet:hover,
+.back-to-top,
+.back-to-top:hover,
+.btn-violet,
+.btn-violet:hover {
+    background-color: #624c99;
+    color: #fff;
+}
+
+.custom-toolbar-container button,
+.custom-toolbar-container button:hover {
+    background: #624c99;
+}
+
+.navigation-disabled a,
+.navigation-disabled a:hover {
+    cursor: not-allowed;
+    background-color: #b3b1b7 !important;
+    color: #fff !important;
+}
+
+.pagination li.active a {
+    background: #624c99;
+}
+
+.fills-application-list > li.selected a,
+.fills-application-list > li a:hover {
+    background-color: #624c99;
+    color: #fff;
+}
+
+.fills-application-list-dropdown > li.selected,
+.fills-application-list-dropdown > li.selected a {
+    background-color: #624c99;
+    color: #fff;
+}
+/* End Object Color Theme */
+
+.fills-application-list {
+    padding-left: 0px;
+    top: 15px;
+    position: relative;
+}
+
+    .fills-application-list > li {
+        float: left;
+        margin-right: 5px;
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .fills-application-list > li > a {
+            overflow: hidden;
+            border-radius: 50px;
+            position: relative;
+            font-weight: 600;
+            color: #000;
+            text-decoration: none;
+            font-size: 10px;
+            padding: 7px 12px;
+            z-index: 999;
+        }
+
+.fills-application-list-dropdown {
+    width: 200px !important;
+}
+
+    .fills-application-list-dropdown > li {
+        list-style: none;
+        padding-right: 20px;
+    }
+
+        .fills-application-list-dropdown > li > a {
+            text-decoration: none;
+            color: #000;
+        }
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.padding-sides-10 {
+    padding: 0px 10px;
+}
+
+.listings-toolbar-container {
+    background: #fff;
+    padding: 5px 10px;
+    width: 100%;
+}
+
+.listings-toolbar-app-title {
+    color: #878787;
+    font-size: 20px;
+    font-weight: 500;
+    word-wrap: break-word
+}
+
+.listings-toolbar-page-title {
+    color: #000;
+    font-size: 24px;
+    font-weight: 600;
+    word-wrap: break-word
+}
+
+.listings-toolbar-container .title, .listings-toolbar-container .buttons {
+    float: left;
+}
+
+    .listings-toolbar-container .buttons button, .listings-toolbar-container .buttons a {
+        float: right;
+        margin-right: 10px;
+    }
+/* Datatable CSS    */
+.custom-search-container .dataTables_filter {
+    text-align: left !important;
+}
+
+.dt-buttons {
+    float: right;
+}
+
+.card-header-custom,
+.modal-title,
+.content-container .alert,
+.notyf__message,
+.btnShowAuditTrailModal {
+    font-size: 14px;
+}
+
+.dt-buttons button,
+.dataTables_filter,
+.dataTables_filter input,
+.fills-table th,
+.fills-table td,
+#accordionSidebar li a,
+.listings-toolbar-container button,
+.listings-toolbar-container a,
+.dataTables_info,
+.dataTables_paginate li a,
+.form-label,
+.form-control,
+.field-validation-error,
+.modal-body p,
+.modal-footer a,
+.modal-footer button,
+.select2-selection__rendered,
+select,
+.select2-results__options,
+.input-group-text,
+.btn-violet,
+.validation-summary-errors li,
+.timeline-history,
+.radioButtonOptionDescription {
+    font-size: 12px !important;
+}
+
+.font-size-12 {
+    font-size: 12px;
+}
+
+.pagination li:not(.first):not(.previous):not(.next):not(.last) a {
+    border-radius: 40px !important;
+}
+
+.pagination li a {
+    margin-right: 5px;
+}
+
+/* End Datatable CSS    */
+
+/* Button Icons */
+.btnFills {
+    background-size: cover !important;
+    width: 40px;
+    height: 40px !important;
+    background-repeat: no-repeat;
+}
+
+.btnInfoIcon {
+    background-image: url('../img/Info.png') !important;
+}
+
+.btnEditIcon {
+    background-image: url('../img/Edit.png') !important;
+}
+
+.btnDeleteIcon {
+    background-image: url('../img/Delete.png') !important;
+}
+
+.btnApprovalListIcon {
+    background-image: url('../img/ApprovalList.png') !important;
+}
+
+.btnSendIcon {
+    background-image: url('../img/Send.png') !important;
+}
+
+.btnApproveIcon {
+    background-image: url('../img/Approve.png') !important;
+}
+
+.btnHistoryIcon {
+    background-image: url('../img/History.png') !important;
+}
+/* End Button Icons */
+@media (max-width: 850px) {
+    .fills-application-list > li {
+        margin-right: 6px;
+        padding: 5px 8px;
+    }
+
+        .fills-application-list > li > a {
+            font-size: 10px;
+        }
+
+    .logo {
+        width: 150px;
+    }
+}
+@media (max-width: 991.98px) {
+
+    .fills-pagination-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        overflow: hidden; /* Prevents overflow */
+    }
+
+        .fills-pagination-container .dataTables_paginate {
+            width: 100%; /* Ensure pagination takes full width */
+            text-align: right;
+        }
+
+        .fills-pagination-container .pagination {
+            display: flex;
+            flex-wrap: wrap; /* Allow pagination buttons to wrap */
+            justify-content: flex-end;
+            gap: 5px; /* Adds some space between pagination items */
+        }
+
+        .fills-pagination-container .dataTables_paginate ul.pagination {
+            margin: 0; /* Reset default margin */
+            padding: 0; /* Reset default padding */
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap */
+            list-style: none; /* Remove list-style */
+        }
+}

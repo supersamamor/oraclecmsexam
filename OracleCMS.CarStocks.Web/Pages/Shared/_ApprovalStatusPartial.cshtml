@@ -1,0 +1,23 @@
+@model string
+
+
+@if (Model == OracleCMS.CarStocks.Core.CarStocks.ApprovalStatus.ForApproval)
+{
+    <h4><span class="badge bg-info">@Model</span></h4>
+}
+else if (Model == OracleCMS.CarStocks.Core.CarStocks.ApprovalStatus.PartiallyApproved)
+{
+    <h4><span class="badge bg-primary">@Model</span></h4>
+}
+else if (Model == OracleCMS.CarStocks.Core.CarStocks.ApprovalStatus.Approved)
+{
+    <h4><span class="badge bg-success">@Model</span></h4>
+}
+else if (Model == OracleCMS.CarStocks.Core.CarStocks.ApprovalStatus.Rejected)
+{
+    <h4><span class="badge bg-danger">@Model</span></h4>
+}
+else
+{
+    <h4><span class="badge bg-seconday">@Model</span></h4>
+}

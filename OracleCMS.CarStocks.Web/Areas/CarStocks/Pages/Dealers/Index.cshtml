@@ -1,0 +1,156 @@
+@page
+@model IndexModel
+
+@section Styles {
+    <partial name="_DataTableStyles" />
+}
+@{
+    ViewData["Title"] = Localizer["Dealers List"];
+    ViewData["ActiveMainPage"] = "Dealers";
+    ViewData["Level1"] = "CarStocks";
+    var toolBarModel = new OracleCMS.CarStocks.Web.Models.ListingToolbarModel(Localizer["Dealers List"].Value);
+    if ((await AuthorizationService.AuthorizeAsync(User, Permission.Dealers.Create)).Succeeded)
+    {
+        toolBarModel.Buttons.Add(new OracleCMS.CarStocks.Web.Models.Button("/Dealers/Add", "CarStocks", OracleCMS.CarStocks.Web.Models.ButtonType.Add, 1));
+    }
+    if ((await AuthorizationService.AuthorizeAsync(User, Permission.Dealers.Upload)).Succeeded)
+    {
+        toolBarModel.Buttons.Add(new OracleCMS.CarStocks.Web.Models.Button(OracleCMS.CarStocks.Web.Models.ButtonType.DownloadTemplate, 2));
+    }
+    if ((await AuthorizationService.AuthorizeAsync(User, Permission.Dealers.Upload)).Succeeded)
+    {
+        toolBarModel.Buttons.Add(new OracleCMS.CarStocks.Web.Models.Button(OracleCMS.CarStocks.Web.Models.ButtonType.Upload, 3));
+    } 
+}
+<partial name="_ListingsToolbarPartial" model=@(toolBarModel) />
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="dealers" class="table table-hover table-bordered table-striped responsive nowrap fills-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>
+								@Localizer["Dealer Name"]
+							</th>
+							<th>
+								@Localizer["Dealer Website"]
+							</th>
+							  
+							
+                            <th>
+                                @Localizer["Actions"]
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<div id="BatchUploadPartialContainer">
+    <partial name="_BatchUpload" model="Model.BatchUpload" />
+</div>
+@section Scripts {
+    <partial name="_DataTableScripts" />
+    <script asp-add-nonce>
+        $(document).ready(function () {
+            var table = $('#dealers').DataTable({
+                select: false,
+                serverSide: true,
+                responsive: true,
+                order: [[2, 'desc']],
+                dom: '@Html.Raw(OracleCMS.CarStocks.Web.WebConstants.DataTableDOMLayOut)',
+                ajax:
+                {
+                    url: '@Url.Page("/Dealers/Index", new { area = "CarStocks", handler = "ListAll" })',
+                    type: "POST",
+                    headers: {
+                        RequestVerificationToken:
+                            $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                },
+                initComplete: function (settings, json) {
+                    BindTableRowCollapseEvent();
+                },
+                columns: [
+                    { data: "dealerName", name: "DealerName", responsivePriority: 1, title: '@Localizer["Dealer Name"]', searchable: true, className: "text-start" },
+				{ data: "dealerWebsite", name: "DealerWebsite", responsivePriority: 1, title: '@Localizer["Dealer Website"]', searchable: false, className: "text-start" },
+				   
+					
+                    {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        responsivePriority: 1,
+                        width: "10%",
+                        className: "fills-text-center",
+                        render: function (data, type, row, meta) {
+                            var url = '@Url.Page("/Dealers/Details", new { area = "CarStocks" })' + '?id=' + row.id;
+                            var button = '<a href="' + url + '" class="btn btnFills btnInfoIcon btnViewDealers" title="@Localizer["View"]"></a>';
+        @if ((await AuthorizationService.AuthorizeAsync(User, Permission.Dealers.Edit)).Succeeded)
+        {
+            <text>
+                                    url = '@Url.Page("/Dealers/Edit", new { area = "CarStocks" })' + '?id=' + row.id;
+                                button = button + '&nbsp;<a href="' + url + '" class="btn btnFills btnEditIcon btnEditDealers" title="@Localizer["Edit"]"></a>';
+            </text>
+        }
+        @if ((await AuthorizationService.AuthorizeAsync(User, Permission.Dealers.Delete)).Succeeded)
+        {
+            <text>
+                                    url = '@Url.Page("/Dealers/Delete", new { area = "CarStocks" })' + '?id=' + row.id;
+                                button = button + '&nbsp;<a href="' + url + '" class="btn btnFills btnDeleteIcon btnDeleteDealers" title="@Localizer["Delete"]"></a>';
+            </text>
+        }
+        
+        @if ((await AuthorizationService.AuthorizeAsync(User, Permission.Dealers.History)).Succeeded)
+        {
+            <text>
+                                    url = '@Url.Page("/Dealers/History", new { area = "CarStocks" })' + '?id=' + row.id;
+                                button = button + '&nbsp;<a href="' + url + '" class="btn btnFills btnHistoryIcon" title="@Localizer["History"]"></a>';
+            </text>
+        }
+                                                                                                                        return button;
+                        },
+                    },
+                    { data: "lastModifiedDate", name: "LastModifiedDate", title: '@Localizer["Last Modified Date"]', visible: false, searchable: false },
+                    { data: "id", name: "Id", visible: false },
+                ],
+                buttons: [
+                    'pageLength',
+                ],
+            });
+            var debounce = new $.fn.dataTable.Debounce(table); // Add delay to search
+
+            $('.btn-table_filter').on('click', function (e) {
+                table.ajax.reload(null, false);
+            });
+            function BindTableRowCollapseEvent() {
+                $('#dealers tbody').on('click', 'td.dtr-control', function () {
+                    $.showAjaxLoaderOnClick([".btnAddDealers", ".btnEditDealers", ".btnViewDealers", ".btnDeleteDealers"]);
+                });
+            }
+            $.showAjaxLoaderOnClick([".btnAddDealers", ".btnEditDealers", ".btnViewDealers", ".btnDeleteDealers"]);
+            $.InitializeSearchKeyCookies(table);
+            $('#btnBatchUpload').on('change', function (e) {
+                $('#batch-upload-form').submit();
+            });
+            $('#@(OracleCMS.CarStocks.Web.Models.ListingToolbarConstants.ButtonPrefix + OracleCMS.CarStocks.Web.Models.ButtonType.DownloadTemplate)').on('click', function (e) {
+				$('#download-template-form').submit();
+			});
+			$('#@(OracleCMS.CarStocks.Web.Models.ListingToolbarConstants.ButtonPrefix + OracleCMS.CarStocks.Web.Models.ButtonType.Upload)').on('click', function (e) {
+				$('#btnBatchUpload').click();
+			});
+        @if (!string.IsNullOrEmpty(Model.BatchUpload.BatchUploadFileName))
+        {
+            <text>
+                    $('#btnDownloadBatchUploadTemplateLink')[0].click();
+            </text>
+        }
+        });
+    </script>
+}

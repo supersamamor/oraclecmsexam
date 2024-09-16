@@ -1,0 +1,48 @@
+@page
+@model EditModel
+@{
+    ViewData["Title"] = Localizer["Edit Dealers"];
+    ViewData["ActiveMainPage"] = "Dealers";
+    ViewData["Level1"] = "CarStocks";
+}
+<form id="dealers-form" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="@Model.RemoveSubDetailId" />
+    <input type="hidden" asp-for="@Model.AsyncAction" />
+    <div id="PartialLoaderContainer">
+        <partial name="_InputFieldsPartial" model="Model.Dealers" />
+    </div>
+    <div id="toolbar-container" class="btn-group" role="group">  
+		<a asp-page="Index" id="btnCancelConfirmationModal" class="btn btn-secondary" title="@Localizer["Back"]"><i class="fas fa-arrow-left"></i></a>                
+        <button type="button" class="btn btn-success" id="btnConfirmationModal" title="@Localizer["Save changes"]"><i class="fas fa-save"></i></button>
+		@if ((await AuthorizationService.AuthorizeAsync(User, Permission.Dealers.History)).Succeeded)
+		{
+			<a asp-page="History" id="btnHistoryConfirmationModal" asp-route-id="@Model.Dealers.Id" class="btn btn-primary" title="@Localizer["History"]"><i class="fas fa-history"></i></a>
+		}
+    </div>
+</form>
+<a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+</a>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+
+<script asp-add-nonce>
+    $(document).ready(function () {
+		$.bindSaveConfirmationModal('Update', '#btnConfirmationModal','#dealers-form');
+		$.bindCancelConfirmationModal('Cancel', '#btnCancelConfirmationModal','#dealers-form', 'Do you want to cancel the changes?');
+		$.bindCancelConfirmationModal('History', '#btnHistoryConfirmationModal', '#dealers-form', 'Do you want to cancel the changes?');
+        function InitializeForm()
+        {
+            $('.DisableSelectDropdown').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+            
+
+        }
+        InitializeForm();
+    });
+</script>
+}

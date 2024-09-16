@@ -1,0 +1,80 @@
+@page
+@model IndexModel
+@section Styles {
+    <partial name="_DataTableStyles" />
+}
+@{
+    ViewData["ActiveMainPage"] = "BatchUploadJobs";
+    ViewData["Title"] = Localizer["Batch Upload Jobs"];
+    ViewData["Level1"] = "Admin";
+    var toolBarModel = new OracleCMS.CarStocks.Web.Models.ListingToolbarModel(Localizer["Batch Upload Jobs"].Value);
+}
+<partial name="_ListingsToolbarPartial" model=@(toolBarModel) />
+<div class="card">
+    <div class="card-body">
+        <table id="entities" class="table table-hover table-bordered table-striped responsive nowrap fills-table" width="100%">
+            <thead>
+                <tr>
+                    <th>
+                        @Localizer["Module"]
+                    </th>
+                    <th>
+                        @Localizer["File Type"]
+                    </th>
+                    <th>
+                        @Localizer["Upload Date/Time"]
+                    </th>
+                    <th>
+                        @Localizer["Duration"]
+                    </th>
+                    <th>
+                        @Localizer["Status"]
+                    </th>
+                    <th>
+                        @Localizer["Remarks"]
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+</a>
+@section Scripts {
+    <partial name="_DataTableScripts" />
+    <script asp-add-nonce>
+        $(document).ready(function () {
+            var table = $('#entities').DataTable({
+                select: false,
+                serverSide: true,
+                order: [[7, 'desc']],
+                dom: '@Html.Raw(OracleCMS.CarStocks.Web.WebConstants.DataTableDOMLayOut)',
+                ajax:
+                {
+                    url: '@Url.Page("/BatchUploadJobs/Index", new { area = "Admin", handler = "ListAll" })',
+                    type: "POST",
+                    headers: {
+                        RequestVerificationToken:
+                            $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                },
+                columns: [
+                    { data: "formattedModule", name: "Module", responsivePriority: 1, orderable: true, searchable: true },
+                    { data: "fileType", name: "FileType", responsivePriority: 1, orderable: true, searchable: true },
+                    { data: "formattedStartDateTime", name: "StartDateTime", responsivePriority: 1, orderable: true, searchable: false },
+                    { data: "duration", name: "Duration", responsivePriority: 1, orderable: false, searchable: false },
+                    { data: "status", name: "Status", class: "text-center", responsivePriority: 1, orderable: false, searchable: false },
+                    { data: "remarks", name: "Remarks", responsivePriority: 1, orderable: false, searchable: false },
+                    { data: "id", name: "Id", visible: false, searchable: false },
+                    { data: "lastModifiedDate", name: "LastModifiedDate", visible: false, orderable: true, searchable: false },
+                ],
+                buttons: [
+                    'pageLength',
+                ],
+            });
+            var debounce = new $.fn.dataTable.Debounce(table); // Add delay to search
+            $.InitializeSearchKeyCookies(table);
+        });
+    </script>
+}

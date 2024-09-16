@@ -1,0 +1,86 @@
+@page
+@model IndexModel
+@section Styles {
+    <partial name="_DataTableStyles" />
+}
+@{
+    ViewData["ActiveMainPage"] = "Applications";
+    ViewData["Title"] = Localizer["Applications List"];
+    ViewData["Level1"] = "Admin";
+    var toolBarModel = new OracleCMS.CarStocks.Web.Models.ListingToolbarModel(Localizer["Applications List"].Value);
+    if ((await AuthorizationService.AuthorizeAsync(User, Permission.Applications.Create)).Succeeded)
+    {
+        toolBarModel.Buttons.Add(new OracleCMS.CarStocks.Web.Models.Button("/Applications/Add", "Admin", OracleCMS.CarStocks.Web.Models.ButtonType.Add, 1));
+    }
+}
+<partial name="_ListingsToolbarPartial" model=@(toolBarModel) />
+<div class="card">
+    <div class="card-body">
+        <table id="applications" class="table table-hover table-bordered table-striped responsive nowrap fills-table" width="100%">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Application.DisplayName)
+                    </th>
+                    <th>
+                        @Localizer["Actions"]
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+</a>
+@section Scripts {
+    <partial name="_DataTableScripts" />
+    <script asp-add-nonce>
+        $(document).ready(function () {
+            var table = $('#applications').DataTable({
+                select: false,
+                serverSide: true,
+                order: [[0, 'asc']],
+                dom: '@Html.Raw(OracleCMS.CarStocks.Web.WebConstants.DataTableDOMLayOut)',
+                ajax:
+                {
+                    url: '@Url.Page("/Applications/Index", new { area = "Admin", handler = "ListAll" })',
+                    type: "POST",
+                    headers: {
+                        RequestVerificationToken:
+                            $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                },
+                columns: [
+                    { data: "displayName", name: "DisplayName", responsivePriority: 1 },
+                    {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        responsivePriority: 2,
+                        width: "10%",
+                        className: "text-center",
+                        render: function (data, type, row, meta) {
+                            var url = '@Url.Page("/Applications/View", new { area = "Admin" })' + '?id=' + row.clientId;
+                            var button = '<a href="' + url + '" class="btn btnFills btnInfoIcon" title="@Localizer["View"]"></a>';
+        @if ((await AuthorizationService.AuthorizeAsync(User, Permission.Applications.Edit)).Succeeded)
+        {
+            <text>
+                                    url = '@Url.Page("/Applications/Edit", new { area = "Admin" })' + '?id=' + row.clientId;
+                                button = button + '&nbsp;<a href="' + url + '" class="btn btnFills btnEditIcon" title="@Localizer["Edit"]"></a>';
+            </text>
+        }
+                            return button;
+                        },
+                    },
+                    { data: "clientId", name: "ClientId", visible: false },
+                ],
+                buttons: [
+                    'pageLength',
+                ],
+            });
+            var debounce = new $.fn.dataTable.Debounce(table); // Add delay to search
+            $.InitializeSearchKeyCookies(table);
+        });
+    </script>
+}

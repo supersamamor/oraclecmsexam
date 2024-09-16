@@ -1,0 +1,18 @@
+@using OracleCMS.CarStocks.Web
+@using OracleCMS.CarStocks.Infrastructure.Data;
+@using OracleCMS.Common.Web.Utility.Authorization
+@using OracleCMS.CarStocks.Web.Pages.Shared;
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Configuration
+@using OracleCMS.CarStocks.Core.Identity;
+@namespace OracleCMS.CarStocks.Web.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, NetEscapades.AspNetCore.SecurityHeaders.TagHelpers
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@inject IHtmlLocalizer<SharedResource> Localizer
+@inject UserManager<ApplicationUser> UserManager
+@inject IAuthorizationService AuthorizationService
+@inject IConfiguration Configuration
+@inject OracleCMS.CarStocks.Web.Service.DropdownServices dropdownService

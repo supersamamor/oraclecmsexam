@@ -1,0 +1,23 @@
+@model OracleCMS.CarStocks.Web.Models.ListingToolbarModel
+@{
+    var appName = Configuration.GetValue<string>("Application");
+}
+<div class="listings-toolbar-container clearfix">
+    <div class="title col-4">
+        <div class="listings-toolbar-app-title">@appName</div>
+        <div class="listings-toolbar-page-title">@Model.PageTitle</div>
+    </div>
+    <div class="buttons col-8">
+        @foreach (var button in @Model.Buttons.OrderByDescending(l => l.Sequence))
+        {
+            if (string.IsNullOrEmpty(button.Page))
+            {
+                <button type="button" class="@button.StyleClass" id="@button.DOMId">@button.Label</button>
+            }
+            else
+            {
+                <a asp-area="@button.Area" asp-page="@button.Page" class="@button.StyleClass">@button.Label</a>
+            }
+        }
+    </div>
+</div>

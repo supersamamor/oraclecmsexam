@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlusFree" Version="4.5.3.8" />
+    <PackageReference Include="LanguageExt.Core" Version="4.4.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OracleCMS.Common.Core.Base\OracleCMS.Common.Core.Base.csproj" />
+    <ProjectReference Include="..\OracleCMS.CarStocks.Core\OracleCMS.CarStocks.Core.csproj" />
+	<ProjectReference Include="..\OracleCMS.CarStocks.Infrastructure\OracleCMS.CarStocks.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

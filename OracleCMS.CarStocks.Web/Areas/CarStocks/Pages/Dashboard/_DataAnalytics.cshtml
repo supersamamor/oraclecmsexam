@@ -1,0 +1,19 @@
+@using Models
+@model Newtonsoft.Json.Linq.JObject
+
+<div class="card">
+    <h5 class="card-header"><span class="card-header-custom">@Localizer["AI Driven Data Analysis and Insights"]</span><br></h5>
+    <div class="card-body history-details">
+        <table class="table table-hover table-bordered table-striped responsive nowrap fills-table" width="100%">
+            <tbody>
+                @foreach (var property in Model.Properties())
+                {
+                    <tr class="">
+                        <td class="timeline-changes-propertyname">@property.Name</td>
+                        <td class="padding-left-10 timeline-changes-details">@Html.Raw(property.Value)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
