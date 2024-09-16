@@ -3,8 +3,8 @@
 services:
   api:
     build:
-      context: ./OracleCMS.CarStocks.API  # The build context points to the folder containing the API's Dockerfile
-      dockerfile: Dockerfile               # The Dockerfile to use for building the `api` service
+      context: .
+      dockerfile: Dockerfile-API               # The Dockerfile to use for building the `api` service
     ports:
       - "48019:8080"                          # Maps port 80 inside the container to port 8080 on the host machine
     environment:
