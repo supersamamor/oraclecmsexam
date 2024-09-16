@@ -18,13 +18,18 @@ services:
       context: .
       dockerfile: Dockerfile-Web               
     ports:
-      - "48020:8080"                          
+      - "48020:8080"  # HTTP
+      - "48021:443"  # HTTPS   
+    volumes:
+      - ./certs:/https  # Mount the certificate- 
     environment:
       - ASPNETCORE_ENVIRONMENT=Development  
       - ConnectionStrings__ApplicationContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True;
       - ConnectionStrings__IdentityContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True; 
       - ConnectionStrings__ReportContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True;
       - UseInMemoryDatabase=false
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=certpass123!@#
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetcore.pfx
     depends_on:
       - db                                 
   db:

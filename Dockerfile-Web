@@ -39,8 +39,16 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
 
-# Expose HTTP port 8080
+# Expose HTTP and HTTPS ports
 EXPOSE 8080
+EXPOSE 443
+
+# Copy the certificate (assuming you have a certificate in a certs folder)
+COPY ./certs/aspnetcore.pfx /https/aspnetcore.pfx
+
+# Set environment variables for the certificate
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password "yourpassword"
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path "/https/aspnetcore.pfx"
 
 # Set the entry point for the container
 ENTRYPOINT ["dotnet", "OracleCMS.CarStocks.Web.dll"]
