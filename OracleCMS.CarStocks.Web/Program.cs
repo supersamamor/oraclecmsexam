@@ -13,6 +13,8 @@ using OracleCMS.Common.Services.Shared;
 using OracleCMS.CarStocks.ChatGPT;
 using Serilog;
 using OracleCMS.CarStocks.Scheduler;
+using OracleCMS.CarStocks.Infrastructure;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -118,7 +120,22 @@ app.UseNotyf();
 // Seed the database
 if (configuration.GetValue<bool>("EnableDatabaseSeed"))
 {
-	Log.Information("Seeding database");
+    using (var serviceScope = app.Services.CreateScope())
+    {
+        var serviceProvider = serviceScope.ServiceProvider;
+        try
+        {
+            var appContext = serviceProvider.GetRequiredService<ApplicationContext>();
+            appContext.Database.EnsureCreated();
+            appContext.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred ensuriong DB was created.");
+        }
+    }
+    Log.Information("Seeding database");
 	var scope = app.Services.CreateScope();
 	await DefaultEntity.Seed(scope.ServiceProvider);
 	await DefaultRole.Seed(scope.ServiceProvider);
