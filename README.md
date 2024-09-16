@@ -1,174 +1,79 @@
-# ASP<span>.</span>NET Core Web App Solution Template
-A multi-project solution template for creating an ASP<span>.</span>NET Core application with example content using current standards 
-and best practices. It is based on clean architecture and includes essential packages. The solution contains a Web App
-and a Web API project.
+# Car Stocks API
 
-## Features
-### Common
-- .NET 6, C# 10
-- Nullable reference types
-- Serilog w/ HTTP Context Enrichers and Seq sink
-- Application monitoring via Application Insights
-- Liveness and readiness probes using health checks
-- CQRS implementation using Mediatr library
-- Fluent validation
-- Pagination using X.PagedList
-- C# functional programming extensions using language-ext library
-- OpenID Connect server and token validation using OpenIddict library
-- Authorization via role claims
-- Multi-tenant
-- Base classes
-- Paged Request/Response
-- Switch to use in-memory DB for development
-- Helper/utility classes
-- Audit trail
-- Feature folders
-- Sample README file
-### Web
-- AdminLTE 3.2 Bootstrap template with dark mode
-- ASP<span>.</span>NET Core Identity with roles and permissions
-- Localization support
-- Admin UI
-- Base PageModel
-- Areas to organize functionality
-- Datatables Javascript library
-- Show release name and build number
-- Configurable banner color which can be used to configure different color per environment
-- Google and MS authentication
-- Helper/utility Javascript functions
-- LibMan to manage client-side libraries
-### Web API
-- API documentation with Swagger
-- Base Controller
-- API versioning
-- Default API conventions 
-- Error handler
-- Thin Controllers
-- JWT authentication and claims-based authorization
-- API metadata endpoint
-- Standard error responses
-### Security
-- Recommended security headers
-- Log successful and invalid login attempts
-- GDPR support
-- Strong passwords
-- Passwords are encrypted in db
-- Secure cookies
-- HTTPS required
-- Anti-forgery tokens
-- Audit and application logs
-- Hide sensitive info in logs
+This project is part of the `OracleCMS.CarStocks` solution and represents the API for managing car stocks.
 
-## Getting started
-### Prerequisites
-- .NET 6 SDK or above
-- Visual Studio 2022 or above
+### Running in Docker
+Before running this application in Docker, make sure you have the following installed:
 
-### Using the template
+- **Docker**: [Install Docker](https://www.docker.com/get-started) if you don't have it already.
 
-1. [Optional] Generate a self-signed certificate and store in the local machine
-    - You can generate a self-signed certificate using the self-cert utility you can download from this [site](https://www.pluralsight.com/blog/software-development/selfcert-create-a-self-signed-certificate-interactively-gui-or-programmatically-in-net).
-    - Refer to this [link](https://improveandrepeat.com/2018/12/how-to-fix-the-keyset-does-not-exist-cryptographicexception) if you encounter "Keyset does not exist" error
+## Running the API with Docker
 
-2. [Optional] Set up external login providers
-    - [Google](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/google-logins) instructions
-    - [Microsoft](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/microsoft-logins) instructions
+### Step 1: Clone the Repository
 
-3. Open the solution in Visual Studio. After the packages are restored, update the configuration in appsettings.Development.json for both the Web API and Web projects.
+If you haven't already, clone the repository to your local machine:
 
-    Web API:
+```bash
+git clone https://github.com/supersamamor/oraclecmsexam.git
+cd oraclecmsexam
+```
 
-    ```json
-    {
-      "Serilog": {
-        "MinimumLevel": {
-          "Default": "Information",
-          "Override": {
-            "Microsoft.AspNetCore": "Warning"
+### Step 2: Build the Docker Image
+1. Navigate to the root directory of the solution, where the .sln file is located.
+2. Run the following command to build the Docker image:
+
+```bash
+docker build -t oraclecms-carstocks-api:latest -f OracleCMS.CarStocks.API/Dockerfile .
+```
+### Step 3: Run the Docker Container
+Once the Docker image is built, run the container using the following command:
+
+```bash
+docker run -d -p 8080:80 --name oraclecms-carstocks-api oraclecms-carstocks-api:latest
+```
+
+### Step 4: Access the API
+API Base URL: http://localhost:8080
+Swagger UI: http://localhost:8080/swagger
+
+
+### Steps for running the app using UseInMemoryDatabase
+1. Ensure that the 'UseInMemoryDatabase' option from app settings of OracleCMS.CarStocks.API project is set to true.
+    ```
+      {
+         "UseInMemoryDatabase": true,
+          "Version": {
+            "ReleaseName": "1.0.0.0",
+            "BuildNumber": "19000101.0"
           }
-        },
-        "WriteTo": [
-          { "Name": "Console" },
-          {
-            "Name": "Seq",
-            "Args": {
-              "serverUrl": "",
-              "apiKey": ""
-            }
+      }    
+    ```
+2. Make sure that the start-up project is 'OracleCMS.CarStocks.API' then Run the application.
+
+
+### Steps for running the app using MS SQL Database
+1. Ensure that the 'UseInMemoryDatabase' option from app settings of OracleCMS.CarStocks.API project is set to false.
+    ```
+      {
+         "UseInMemoryDatabase": false,
+          "Version": {
+            "ReleaseName": "1.0.0.0",
+            "BuildNumber": "19000101.0"
           }
-        ]
-      },
-      "ApplicationInsights": {
-        "InstrumentationKey": ""
-      },
-      "UseInMemoryDatabase": false
-    }
+      }    
     ```
 
-    Web:
-
-    ```json
-    {
-      "DetailedErrors": true,
-      "Serilog": {
-        "MinimumLevel": {
-          "Default": "Information",
-          "Override": {
-            "Microsoft.AspNetCore": "Warning"
-          }
-        },
-        "WriteTo": [
-          { "Name": "Console" },
-          {
-            "Name": "Seq",
-            "Args": {
-              "serverUrl": "",
-              "apiKey": ""
-            }
-          }
-        ]
-      },
-      "ApplicationInsights": {
-        "InstrumentationKey": ""
-      },
-      "DefaultPassword": "",
-      "DefaultClient": {
-        "ClientId": "",
-        "ClientSecret": ""
-      },
-      "SslThumbprint": "",
-      "UseInMemoryDatabase": false,
-      "NavbarColor": "orange",
-      "SmtpSettings": {
-        "Host": "",
-        "Port": 587,
-        "Email": "",
-        "Password": ""
-      },
-      "Authentication": {
-        "Microsoft": {
-          "ClientId": "",
-          "ClientSecret": ""
-        },
-        "Google": {
-          "ClientId": "",
-          "ClientSecret": ""
-        }
-      }
-    }
-    ```
-
-4. Open the Package Manager Console and apply the EF Core migrations
+2. Open the Package Manager Console and apply the EF Core migrations
 
     ```powershell
-	Add-Migraation -Context ApplicationContext InitialDatabaseStructure
+	Add-Migration -Context ApplicationContext InitialDatabaseStructure
     Update-Database -Context IdentityContext
     Update-Database -Context ApplicationContext
     ```
 
-5. Out of the box, the application assumes that the following URLs are configured
-    - Web: https://localhost:5001
-    - Web API: https://localhost:44379  
+3. Out of the box, the application assumes that the following URLs are configured
+    - Web: https://localhost:56469
+    - Web API: https://localhost:56471
 
       To configure Visual Studio to use the above URLs, edit *launchSettings.json* for the Web API and Web projects.
 
@@ -183,7 +88,7 @@ and a Web API project.
             "environmentVariables": {
               "ASPNETCORE_ENVIRONMENT": "Development"
             },
-            "applicationUrl": "https://localhost:44379;http://localhost:44378"
+            "applicationUrl": "https://localhost:56471;http://localhost:44378"
           }
         }
       }    
@@ -199,56 +104,8 @@ and a Web API project.
             "environmentVariables": {
               "ASPNETCORE_ENVIRONMENT": "Development"
             },
-            "applicationUrl": "https://localhost:5001;http://localhost:5000"
+            "applicationUrl": "https://localhost:56469;http://localhost:5000"
           }
         }
       }
       ```
-
-      Or you can configure the automatically generated ports in the *appsettings.json* of the Web API project and the Web Admin UI.
-
-      appsettings.json
-      ```
-      "Authentication": {
-        "Issuer": "https://localhost:5001/",
-        "Audience": "https://localhost:44379"
-      }
-      ```
-
-      Admin UI
-      ![Admin UI](https://dev.azure.com/fai-dev-team/5d14b026-fdfb-4687-b8c9-85758d482332/_apis/git/repositories/69898df6-0594-4c8c-9185-acfac62ebf46/items?path=/docs/images/demo_api.png&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=main&resolveLfs=true&%24format=octetStream&api-version=5.0)
-
-1. Build and run your application.
-
-### Default web credentials
-
-User: system@admin  
-Password: &lt;set in appsettings.json&gt;
-
-### Generating access tokens
-
-The Web project implements an OpenID Connect server and token authentication using the OpenIddict library. It supports 
-authorization code flow, device authorization flow, client credentials and password grant.
-
-Download the Postman collection below for samples of how to generate access tokens using the supported flows. You can
-use the generated access token to authenticate API requests.
-
-### API
-This is the Web API project. It is an ASP<span>.</span>NET Core application with an example Controller for a RESTful HTTP 
-service. It uses claims-based authorization to secure the endpoints.
-
-### Application
-This project contains business logic codes that is meant to be shared, e.g. between Web and Web API projects.
-
-### Core
-This project contains the domain models. If using a functional programming approach, domain models should be immutable
-records. Business logic codes should be placed in static classes. It is done this way to separate data and logic in
-accordance with the functional programming approach.
-
-### Infrastructure
-This project contains code for communicating with external sources such as databases or external services.
-
-### Web
-This is the Web project. It implements ASP<span>.</span>NET Core Identity and uses Areas to organize functionality. It
-also implements an OpenID server and token authentication using the OpenIddict library. It uses claims-based authorization
-to secure the pages.

@@ -51,12 +51,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.EnableSwagger();
-app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseRouting();
 var enableAuthentication = configuration.GetValue<bool>("Authentication:Enabled");
 if (enableAuthentication)
 {
+    app.UseHttpsRedirection();
     app.UseAuthentication();  
 }
 app.UseAuthorization();
