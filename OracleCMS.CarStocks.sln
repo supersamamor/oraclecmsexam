@@ -47,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		azure-pipelines-api.yml = azure-pipelines-api.yml
 		azure-pipelines.yml = azure-pipelines.yml
 		docker-compose.yml = docker-compose.yml
+		Dockerfile-API = Dockerfile-API
 		README.md = README.md
 	EndProjectSection
 EndProject
