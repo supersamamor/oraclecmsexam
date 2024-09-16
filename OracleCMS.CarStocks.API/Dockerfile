@@ -1,19 +1,43 @@
 ﻿# Stage 1: Build the application
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /source
 
-# Copy the csproj and restore as distinct layers
-COPY *.csproj ./
+# Copy the solution file and restore dependencies
+COPY *.sln ./
+
+# Copy project files for all necessary projects
+COPY OracleCMS.CarStocks.API/*.csproj ./OracleCMS.CarStocks.API/
+COPY OracleCMS.CarStocks.Application/*.csproj ./OracleCMS.CarStocks.Application/
+COPY OracleCMS.CarStocks.Infrastructure/*.csproj ./OracleCMS.CarStocks.Infrastructure/
+COPY OracleCMS.Common.API/*.csproj ./OracleCMS.Common.API/
+COPY OracleCMS.CarStocks.Core/*.csproj ./OracleCMS.CarStocks.Core/
+COPY OracleCMS.CarStocks.Web/*.csproj ./OracleCMS.CarStocks.Web/
+COPY OracleCMS.Common.Services.Shared/*.csproj ./OracleCMS.Common.Services.Shared/
+COPY OracleCMS.Common.Utility/*.csproj ./OracleCMS.Common.Utility/
+COPY OracleCMS.Common.Web.Utility/*.csproj ./OracleCMS.Common.Web.Utility/
+COPY OracleCMS.Common.Core/*.csproj ./OracleCMS.Common.Core/
+COPY OracleCMS.Common.Core.Base/*.csproj ./OracleCMS.Common.Core.Base/
+COPY OracleCMS.Common.Data/*.csproj ./OracleCMS.Common.Data/
+COPY OracleCMS.Common.Identity.Abstractions/*.csproj ./OracleCMS.Common.Identity.Abstractions/
+COPY OracleCMS.CarStocks.EmailSending/*.csproj ./OracleCMS.CarStocks.EmailSending/
+COPY OracleCMS.CarStocks.ExcelProcessor/*.csproj ./OracleCMS.CarStocks.ExcelProcessor/
+COPY OracleCMS.CarStocks.Scheduler/*.csproj ./OracleCMS.CarStocks.Scheduler/
+COPY OracleCMS.CarStocks.ChatGPT/*.csproj ./OracleCMS.CarStocks.ChatGPT/
+
+# Restore all dependencies for the solution
 RUN dotnet restore
 
-# Copy everything else and build the app
-COPY . ./
-RUN dotnet publish -c Release -o /out
+# Copy all the project files
+COPY . .
+
+# Build the API project
+WORKDIR /source/OracleCMS.CarStocks.API
+RUN dotnet publish -c Release -o /app
 
 # Stage 2: Serve the application using a smaller runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build /out .
+COPY --from=build /app .
 
 # Expose port 80 for HTTP traffic
 EXPOSE 80
