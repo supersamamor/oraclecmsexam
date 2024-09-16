@@ -8,8 +8,9 @@ services:
     ports:
       - "48019:8080"                          # Maps port 80 inside the container to port 8080 on the host machine
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development  # Sets environment variable for ASP.NET Core (Development mode)
+      - ASPNETCORE_ENVIRONMENT=Release  # Sets environment variable for ASP.NET Core (Development mode)
       - ConnectionStrings__ApplicationContext=Server=db;Database=YourDatabase;User Id=sa;Password=TestPas$123!@#; # Update with your DB connection
+      - UseInMemoryDatabase=false
     depends_on:
       - db                                 # Ensures that the `db` service starts before the `api` service
   db:
