@@ -18,6 +18,7 @@ public class StocksController : BaseApiController<StocksController>
     public async Task<ActionResult<PagedListResponse<StocksState>>> GetAsync([FromQuery] GetStocksQuery query) =>
         Ok(await Mediator.Send(query));
 
+
     [Authorize(Policy = Permission.Stocks.View)]
     [HttpGet("{id}")]
     public async Task<ActionResult<StocksState>> GetAsync(string id) =>
@@ -45,12 +46,12 @@ public class StocksController : BaseApiController<StocksController>
 public record StocksViewModel
 {
     [Required]
-	
-	public string CarID { get;set; } = "";
-	[Required]
-	
-	public string DealerID { get;set; } = "";
-	[Required]
-	public int Quantity { get;set; } = 0;
-	   
+
+    public string CarID { get; set; } = "";
+    [Required]
+
+    public string DealerID { get; set; } = "";
+    [Required]
+    public int Quantity { get; set; } = 0;
+
 }

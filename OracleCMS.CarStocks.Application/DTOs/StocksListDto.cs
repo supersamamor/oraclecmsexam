@@ -5,8 +5,9 @@ namespace OracleCMS.CarStocks.Application.DTOs;
 
 public record StocksListDto : BaseDto
 {
-	public string CarID { get; init; } = "";
-	public string DealerID { get; init; } = "";
+    public string CarMake { get; init; } = "";
+    public string CarModel { get; init; } = "";
+	public string DealerName { get; init; } = "";
 	public int Quantity { get; init; }
 	public string QuantityFormatted { get { return this.Quantity.ToString("#,##0"); } }
 	
