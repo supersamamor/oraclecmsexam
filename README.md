@@ -29,17 +29,22 @@ docker build -t supersamamor/oraclecms-carstocks-api:latest -f OracleCMS.CarStoc
 Once the Docker image is built, run the container using the following command:
 
 ```bash
-docker run -d -p 8080:8080 --name oraclecms-carstocks-api supersamamor/oraclecms-carstocks-api:latest
+docker run -d -p 48019:8080 --name oraclecms-carstocks-api supersamamor/oraclecms-carstocks-api:latest
 ```
 
 ### Step 4: Access the API
-API Base URL: http://localhost:8080
-Swagger UI: http://localhost:8080/swagger
+API Base URL: http://localhost:48019
+Swagger UI: http://localhost:48019/swagger
 
 
 ### Docker Image Url
 
 https://hub.docker.com/repository/docker/supersamamor/oraclecms-carstocks-api
+
+### Pull docker image
+```bash
+docker pull supersamamor/oraclecms-carstocks-api
+```
 
 ### 
 
