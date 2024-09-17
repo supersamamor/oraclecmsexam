@@ -5,8 +5,10 @@ using OracleCMS.CarStocks.Web.Models;
 using OracleCMS.CarStocks.Web.Service;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 namespace OracleCMS.CarStocks.Web.Areas.CarStocks.Pages.Dashboard
 {
+    [Authorize]
     public class IndexModel(AIDataAnalyticsServices aiDataAnalyticsServices) : BasePageModel<IndexModel>
     {    
         [BindProperty]

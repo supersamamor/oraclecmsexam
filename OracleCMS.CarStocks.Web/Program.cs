@@ -94,64 +94,39 @@ if (!app.Environment.IsDevelopment())
 }
 var baseUrl = configuration.GetValue<string>("BaseUrl");
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-    // Production environment: apply strict security headers
-    app.UseSecurityHeaders(policies =>
-        policies.AddDefaultSecurityHeaders()
-                .AddContentSecurityPolicy(builder =>
+app.UseHttpsRedirection();
+// Production environment: apply strict security headers
+app.UseSecurityHeaders(policies =>
+    policies.AddDefaultSecurityHeaders()
+            .AddContentSecurityPolicy(builder =>
+            {
+                builder.AddUpgradeInsecureRequests();
+                builder.AddBlockAllMixedContent();
+                builder.AddDefaultSrc().None().OverHttps();
+                builder.AddScriptSrc()
+                        .Self()
+                        .StrictDynamic()
+                        .WithNonce()
+                        .OverHttps();
+                builder.AddStyleSrc()
+                        .Self()
+                        .UnsafeEval()
+                        .StrictDynamic()
+                        .WithNonce()
+                        .OverHttps();
+                builder.AddImgSrc().OverHttps().Data();
+                builder.AddObjectSrc().None();
+                builder.AddBaseUri().None();
+                builder.AddFrameAncestors().Self();
+                builder.AddFormAction().From(baseUrl!).Self().OverHttps();
+                builder.AddConnectSrc().From(baseUrl!).OverHttps();
+                builder.AddFontSrc().From(new string[]
                 {
-                    builder.AddUpgradeInsecureRequests();
-                    builder.AddBlockAllMixedContent();
-                    builder.AddDefaultSrc().None().OverHttps();
-                    builder.AddScriptSrc()
-                            .Self()
-                            .StrictDynamic()
-                            .WithNonce()
-                            .OverHttps();
-                    builder.AddStyleSrc()
-                            .Self()
-                            .UnsafeEval()
-                            .StrictDynamic()
-                            .WithNonce()
-                            .OverHttps();
-                    builder.AddImgSrc().OverHttps().Data();
-                    builder.AddObjectSrc().None();
-                    builder.AddBaseUri().None();
-                    builder.AddFrameAncestors().Self();
-                    builder.AddFormAction().From(baseUrl!).Self().OverHttps();
-                    builder.AddConnectSrc().From(baseUrl!).OverHttps();
-                    builder.AddFontSrc().From(new string[]
-                    {
                         "https://fonts.gstatic.com",
                         baseUrl!,
                         "https://stackpath.bootstrapcdn.com"
-                    }).OverHttps();
-                }));
-}
-else
-{
-    // Development environment: apply permissive security headers
-    app.UseSecurityHeaders(policies =>
-        policies.AddDefaultSecurityHeaders()
-                .AddContentSecurityPolicy(builder =>
-                {
-                    // Allow all sources in development
-                    builder.AddDefaultSrc();
-                    builder.AddScriptSrc();
-                    builder.AddStyleSrc();
-                    builder.AddImgSrc();
-                    builder.AddFontSrc();
-                    builder.AddConnectSrc();
-                    builder.AddFrameSrc();
-                    builder.AddMediaSrc();
-                    builder.AddObjectSrc();
-                    builder.AddFrameAncestors();
-                    builder.AddFormAction();
-                    builder.AddBaseUri();
-                }));
-}
+                }).OverHttps();
+            }));
 app.UseWebOptimizer();
 app.UseStaticFiles(new StaticFileOptions
 {
