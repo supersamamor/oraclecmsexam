@@ -13,16 +13,15 @@ using OracleCMS.Common.Services.Shared;
 using OracleCMS.CarStocks.ChatGPT;
 using Serilog;
 using OracleCMS.CarStocks.Scheduler;
-using OracleCMS.CarStocks.Infrastructure;
-using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
 builder.Host.UseSerilog((context, services, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration).ReadFrom
-                          .Services(services).Enrich
+                          .Services(services).WriteTo.Console().Enrich
                           .FromLogContext());
+
 
 // Reading connection strings from environment variables
 builder.Configuration.AddEnvironmentVariables();
@@ -58,16 +57,24 @@ var app = builder.Build();
 using (var serviceScope = app.Services.CreateScope())
 {
     var serviceProvider = serviceScope.ServiceProvider;
+    var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
     try
     {
+        var identityContext = serviceProvider.GetRequiredService<IdentityContext>();
+        identityContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {        
+        logger.LogError(ex, "An error occurred ensuring the database was migrated.");
+    }
+    try
+    {     
         var appContext = serviceProvider.GetRequiredService<ApplicationContext>();
-        appContext.Database.EnsureCreated();
-        appContext.Database.Migrate();
+        appContext.Database.Migrate(); 
     }
     catch (Exception ex)
     {
-        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred ensuriong DB was created.");
+        logger.LogError(ex, "An error occurred ensuring the database was migrated.");
     }
 }
 // Static Files
@@ -86,34 +93,65 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 var baseUrl = configuration.GetValue<string>("BaseUrl");
-app.UseHttpsRedirection();
-app.UseSecurityHeaders(policies =>
-    policies.AddDefaultSecurityHeaders()
-            .AddContentSecurityPolicy(builder =>
-            {
-                builder.AddUpgradeInsecureRequests();
-				builder.AddBlockAllMixedContent();
-				builder.AddDefaultSrc().None().OverHttps();
-				builder.AddScriptSrc()
-						.Self()
-						.StrictDynamic()
-						.WithNonce()
-						.OverHttps();
-				builder.AddStyleSrc()
-						.Self()
-						.UnsafeEval()
-						.StrictDynamic()
-						.WithNonce()
-						.OverHttps();
-				builder.AddImgSrc().OverHttps().Data();
-				builder.AddObjectSrc().None();
-				builder.AddBaseUri().None();
-				builder.AddFrameAncestors().Self();
-				builder.AddFormAction().From(baseUrl!).Self().OverHttps();
-				builder.AddConnectSrc().From(baseUrl!).OverHttps();
-				builder.AddFontSrc().From(new string[] { "https://fonts.gstatic.com",
-					baseUrl!,"https://stackpath.bootstrapcdn.com" }).OverHttps();
-            }));
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+    // Production environment: apply strict security headers
+    app.UseSecurityHeaders(policies =>
+        policies.AddDefaultSecurityHeaders()
+                .AddContentSecurityPolicy(builder =>
+                {
+                    builder.AddUpgradeInsecureRequests();
+                    builder.AddBlockAllMixedContent();
+                    builder.AddDefaultSrc().None().OverHttps();
+                    builder.AddScriptSrc()
+                            .Self()
+                            .StrictDynamic()
+                            .WithNonce()
+                            .OverHttps();
+                    builder.AddStyleSrc()
+                            .Self()
+                            .UnsafeEval()
+                            .StrictDynamic()
+                            .WithNonce()
+                            .OverHttps();
+                    builder.AddImgSrc().OverHttps().Data();
+                    builder.AddObjectSrc().None();
+                    builder.AddBaseUri().None();
+                    builder.AddFrameAncestors().Self();
+                    builder.AddFormAction().From(baseUrl!).Self().OverHttps();
+                    builder.AddConnectSrc().From(baseUrl!).OverHttps();
+                    builder.AddFontSrc().From(new string[]
+                    {
+                        "https://fonts.gstatic.com",
+                        baseUrl!,
+                        "https://stackpath.bootstrapcdn.com"
+                    }).OverHttps();
+                }));
+}
+else
+{
+    // Development environment: apply permissive security headers
+    app.UseSecurityHeaders(policies =>
+        policies.AddDefaultSecurityHeaders()
+                .AddContentSecurityPolicy(builder =>
+                {
+                    // Allow all sources in development
+                    builder.AddDefaultSrc();
+                    builder.AddScriptSrc();
+                    builder.AddStyleSrc();
+                    builder.AddImgSrc();
+                    builder.AddFontSrc();
+                    builder.AddConnectSrc();
+                    builder.AddFrameSrc();
+                    builder.AddMediaSrc();
+                    builder.AddObjectSrc();
+                    builder.AddFrameAncestors();
+                    builder.AddFormAction();
+                    builder.AddBaseUri();
+                }));
+}
 app.UseWebOptimizer();
 app.UseStaticFiles(new StaticFileOptions
 {

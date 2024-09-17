@@ -22,6 +22,7 @@ services:
       - "48021:443"  # HTTPS   
     volumes:
       - ./certs:/https  # Mount the certificate- 
+      - ./uploads:/app/uploads
     environment:
       - ASPNETCORE_ENVIRONMENT=Development  
       - ConnectionStrings__ApplicationContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True;
@@ -30,6 +31,7 @@ services:
       - UseInMemoryDatabase=false
       - ASPNETCORE_Kestrel__Certificates__Default__Password=certpass123!@#
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetcore.pfx
+      - UsersUpload__UploadFilesPath=/app/uploads
     depends_on:
       - db                                 
   db:
@@ -40,20 +42,6 @@ services:
     ports:
       - "1433:1433"                       
     volumes:
-      - sql_data:/var/opt/mssql     
-
-  # Migration service to apply migrations before starting API
-  migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile-Web
-    depends_on:
-      - db
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__ApplicationContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True;
-      - ConnectionStrings__IdentityContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True; 
-      - ConnectionStrings__ReportContext=Server=db;Database=CarStocks;Persist Security Info=True;User Id=sa;Password=TestPas$123!@#;Connection Timeout=300;TrustServerCertificate=True;
-    entrypoint: ["dotnet", "ef", "database", "update"] 
+      - sql_data:/var/opt/mssql
 volumes:
   sql_data:                               
