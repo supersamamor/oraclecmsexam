@@ -1,6 +1,7 @@
 ﻿body * {
     font-family: Poppins;
 }
+
 .fills-text-end {
     text-align: right;
 }
@@ -32,6 +33,14 @@
 
     .btn-custom-dark-blue:hover {
         background-color: #061e3f;
+    }
+
+.bg-custom-sky-blue {
+    background-color: #35B3F2 !important;
+}
+
+    .btn-custom-sky-blue:hover {
+        background-color: #35B3F2;
     }
 
 /* Object Color Theme */
@@ -271,6 +280,7 @@ select,
         width: 150px;
     }
 }
+
 @media (max-width: 991.98px) {
 
     .fills-pagination-container {
