@@ -125,14 +125,14 @@ namespace OracleCMS.CarStocks.Web.Service
 		public SelectList GetCarsList(string? id)
 		{
 			return _context.GetSingle<CarsState>(e => e.Id == id, new()).Result.Match(
-				Some: e => new SelectList(new List<SelectListItem> { new() { Value = e.Id, Text = e.Id } }, "Value", "Text", e.Id),
+				Some: e => new SelectList(new List<SelectListItem> { new() { Value =e.Id, Text = e.Make + " - " + e.Model } }, "Value", "Text", e.Id),
 				None: () => new SelectList(new List<SelectListItem>(), "Value", "Text")
 			);
 		}
 		public SelectList GetDealersList(string? id)
 		{
 			return _context.GetSingle<DealersState>(e => e.Id == id, new()).Result.Match(
-				Some: e => new SelectList(new List<SelectListItem> { new() { Value = e.Id, Text = e.Id } }, "Value", "Text", e.Id),
+				Some: e => new SelectList(new List<SelectListItem> { new() { Value = e.Id, Text = e.DealerName } }, "Value", "Text", e.Id),
 				None: () => new SelectList(new List<SelectListItem>(), "Value", "Text")
 			);
 		}

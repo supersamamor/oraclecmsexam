@@ -34,7 +34,7 @@ public class IndexModel : BasePageModel<IndexModel>
 	public async Task<IActionResult> OnGetSelect2Data([FromQuery] Select2Request request)
     {
         var result = await Mediatr.Send(request.ToQuery<GetDealersQuery>(nameof(DealersState.Id)));
-        return new JsonResult(result.ToSelect2Response(e => new Select2Result { Id = e.Id, Text = e.Id }));
+        return new JsonResult(result.ToSelect2Response(e => new Select2Result { Id = e.Id, Text = e.DealerName }));
     }
 	public async Task<IActionResult> OnPostBatchUploadAsync()
     {        

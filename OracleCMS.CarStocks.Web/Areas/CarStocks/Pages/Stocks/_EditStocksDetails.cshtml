@@ -3,28 +3,24 @@
 
 <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-1 row-cols-xl-1 row-cols-xxl-1">
     <div class="col">
-	<div class="mb-3">
-		<label asp-for="@Model.CarID" class="form-label"><strong>@Localizer["Car ID"] :</strong></label>
-			<select asp-for="@Model.CarID" class="form-control" asp-items="@(dropdownService.GetCarsList(Model.CarID))"><option value="">- Select Car ID -</option></select>
-			<span asp-validation-for="@Model.CarID" class="text-danger"></span>
-			
-	</div>
-</div>
-<div class="col">
-	<div class="mb-3">
-		<label asp-for="@Model.DealerID" class="form-label"><strong>@Localizer["Dealer ID"] :</strong></label>
-			<select asp-for="@Model.DealerID" class="form-control" asp-items="@(dropdownService.GetDealersList(Model.DealerID))"><option value="">- Select Dealer ID -</option></select>
-			<span asp-validation-for="@Model.DealerID" class="text-danger"></span>
-			
-	</div>
-</div>
-<div class="col">
-	<div class="mb-3">
-		<label asp-for="@Model.Quantity" class="form-label"><strong>@Localizer["Quantity"] :</strong></label>
-			<input asp-for="@Model.Quantity" class="form-control text-end"  />
-			<span asp-validation-for="@Model.Quantity" class="text-danger"></span>
-			
-	</div>
-</div>
-
+        <div class="mb-3">
+            <label asp-for="@Model.CarID" class="form-label"><strong>@Localizer["Car"] :</strong></label>
+            <select asp-for="@Model.CarID" class="form-control" asp-items="@(dropdownService.GetCarsList(Model.CarID))"><option value="">- Select Car ID -</option></select>
+            <span asp-validation-for="@Model.CarID" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="mb-3">
+            <label asp-for="@Model.DealerID" class="form-label"><strong>@Localizer["Dealer"] :</strong></label>
+            <select asp-for="@Model.DealerID" class="form-control" asp-items="@(dropdownService.GetDealersList(Model.DealerID))"><option value="">- Select Dealer ID -</option></select>
+            <span asp-validation-for="@Model.DealerID" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="mb-3">
+            <label asp-for="@Model.Quantity" class="form-label"><strong>@Localizer["Quantity"] :</strong></label>
+            <input asp-for="@Model.Quantity" class="form-control text-end" />
+            <span asp-validation-for="@Model.Quantity" class="text-danger"></span>
+        </div>
+    </div>
 </div>
