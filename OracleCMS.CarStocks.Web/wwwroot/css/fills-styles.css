@@ -2,6 +2,10 @@
     font-family: Poppins;
 }
 
+.logo {
+    width: 100px;
+}
+
 .fills-text-end {
     text-align: right;
 }
@@ -39,9 +43,9 @@
     background-color: #35B3F2 !important;
 }
 
-    .btn-custom-sky-blue:hover {
-        background-color: #35B3F2;
-    }
+.btn-custom-sky-blue:hover {
+    background-color: #35B3F2;
+}
 
 /* Object Color Theme */
 .fills-table th {
